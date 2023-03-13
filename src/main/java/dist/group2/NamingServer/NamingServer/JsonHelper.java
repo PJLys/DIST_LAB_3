@@ -1,4 +1,4 @@
-package dist.group2.NamingServer;
+package dist.group2.NamingServer.NamingServer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
