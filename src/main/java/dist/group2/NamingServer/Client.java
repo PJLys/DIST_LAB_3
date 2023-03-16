@@ -1,9 +1,7 @@
 package dist.group2.NamingServer;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +12,12 @@ public class Client implements Runnable {
     private final RestTemplate restTemplate;
     private final String baseUrl;
 
-    public Client() throws UnknownHostException {
-        this.name = InetAddress.getLocalHost().getHostName();
-        this.IPAddress = InetAddress.getLocalHost().getHostAddress();
+    public Client(String nodeName, String IPAddress) throws UnknownHostException {
+        this.name = nodeName;
+        this.IPAddress = IPAddress;
         this.restTemplate = new RestTemplate();
         this.baseUrl = "http://localhost:8080/api/naming";
-        System.out.println("<---> " + this.name + " Instantiated <--->");
+        System.out.println("<---> " + nodeName + " Instantiated <--->");
         addNode(this.name, this.IPAddress);
     }
 
