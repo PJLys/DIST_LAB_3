@@ -1,14 +1,13 @@
 package dist.group2.NamingServer.NamingServer;
 
 import java.net.InetAddress;
+import java.util.Dictionary;
+import java.util.List;
+import java.util.Map;
+
+import ch.qos.logback.core.joran.sanity.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(
@@ -23,19 +22,17 @@ public class NamingController {
     }
 
     @PostMapping
-    public void addNode(@RequestParam String nodeName, @RequestParam InetAddress IPAddress) {
-        this.service.addNode(nodeName, IPAddress);
+    public void addNode(@RequestBody Map<String, String> node) {
+        this.service.addNode(node);
     }
 
-    @DeleteMapping(
-            path = {"{cardNumber}"}
-    )
-    public void deleteNode(@PathVariable("cardNumber") String nodeName) {
+    @DeleteMapping(path = {"{nodeName}"})
+    public void deleteNode(@PathVariable("nodeName") String nodeName) {
         this.service.deleteNode(nodeName);
     }
 
     @GetMapping
-    public InetAddress findFile(String fileName) {
+    public String findFile(String fileName) {
         return this.service.findFile(fileName);
     }
 }

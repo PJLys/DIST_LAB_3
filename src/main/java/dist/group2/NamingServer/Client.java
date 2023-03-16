@@ -1,7 +1,6 @@
-package dist.group2.NamingServer.Client1;
+package dist.group2.NamingServer;
 
-import ch.qos.logback.core.joran.sanity.Pair;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.boot.SpringApplication;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.InetAddress;
@@ -9,19 +8,19 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Client1 implements Runnable {
+public class Client implements Runnable {
     private final String name;
     private final String IPAddress;
     private final RestTemplate restTemplate;
     private final String baseUrl;
 
-    public Client1(String nodeName, String IPAddress) throws UnknownHostException {
-        this.name = nodeName;
-        this.IPAddress = IPAddress;
+    public Client() throws UnknownHostException {
+        this.name = InetAddress.getLocalHost().getHostName();
+        this.IPAddress = InetAddress.getLocalHost().getHostAddress();
         this.restTemplate = new RestTemplate();
         this.baseUrl = "http://localhost:8080/api/naming";
+        System.out.println("<---> " + this.name + " Instantiated <--->");
         addNode(this.name, this.IPAddress);
-        System.out.println("<---> " + nodeName + " Instantiated <--->");
     }
 
     public void run() {
@@ -36,6 +35,10 @@ public class Client1 implements Runnable {
 
     public void runSequence() {
         findFile("file1.txt");
+        sleep(500);
+        findFile("file2.txt");
+        sleep(500);
+        findFile("file3.txt");
         sleep(5000);
     }
 
@@ -54,21 +57,33 @@ public class Client1 implements Runnable {
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("nodeName", nodeName);
         requestBody.put("IPAddress", IPAddress);
-        restTemplate.postForObject(url, requestBody, Void.class);
-        System.out.println("<" + this.name + "> - Add node with name " + nodeName + " and IP address " + IPAddress);
+        try {
+            restTemplate.postForObject(url, requestBody, Void.class);
+            System.out.println("<" + this.name + "> - Add node with name " + nodeName + " and IP address " + IPAddress);
+        } catch(Exception e) {
+            System.out.println("<" + this.name + "> - ERROR - Failed to add " + nodeName + ", hash collision occurred");
+        }
     }
 
     // DELETE functionality
     public void deleteNode(String nodeName) {
         String url = baseUrl + "/" + nodeName;
-        restTemplate.delete(url);
-        System.out.println("<" + this.name + "> - Deleted node with name " + nodeName);
+        try {
+            restTemplate.delete(url);
+            System.out.println("<" + this.name + "> - Deleted node with name " + nodeName);
+        } catch(Exception e) {
+            System.out.println("<" + this.name + "> - ERROR - Failed to delete " + nodeName);
+        }
     }
 
     // GET functionality
     public void findFile(String fileName) {
         String url = baseUrl + "?fileName=" + fileName;
-        String IPAddress = restTemplate.getForObject(url, String.class);
-        System.out.println("<" + this.name + "> - " + fileName + " is stored at IPAddress " + IPAddress);
+        try {
+            String IPAddress = restTemplate.getForObject(url, String.class);
+            System.out.println("<" + this.name + "> - " + fileName + " is stored at IPAddress " + IPAddress);
+        } catch(Exception e) {
+            System.out.println("<" + this.name + "> - ERROR - Failed to find " + fileName + ", no nodes in database");
+        }
     }
 }
