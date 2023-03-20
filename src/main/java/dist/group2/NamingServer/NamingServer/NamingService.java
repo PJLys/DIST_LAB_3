@@ -17,7 +17,7 @@ public class NamingService {
 
     @Autowired
     public NamingService() {
-        repository = convertJsonToMap();
+        repository = new TreeMap<>();       // convertJsonToMap();
     }
 
     public Integer hashValue(String name) {
