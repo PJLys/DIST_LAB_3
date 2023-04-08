@@ -29,6 +29,7 @@ public class NamingService {
         if (repository.containsKey(hashValue(node.get("nodeName")))) {
             throw new IllegalStateException("Hash of " + node.get("nodeName") + " is already being used");
         }
+        System.out.println("Succesfully added node with name " + node.get("nodeName") + " (hash=" + hashValue(node.get("nodeName")) + ") and IP address " + node.get("IPAddress"));
         repository.put(hashValue(node.get("nodeName")), node.get("IPAddress"));
         convertMapToJson(repository);
     }
@@ -38,6 +39,7 @@ public class NamingService {
             throw new IllegalStateException("There is no node with name" + nodeName);
         }
         repository.remove(hashValue(nodeName));
+        System.out.println("Succesfully removed node with name " + nodeName);
         convertMapToJson(repository);
     }
 
@@ -50,10 +52,10 @@ public class NamingService {
             throw new IllegalStateException("There is no node in the database!");
         } else {
             List<Integer> smallerHashes = new ArrayList();
-            Iterator var5 = hashes.iterator();
+            Iterator iter = hashes.iterator();
 
-            while(var5.hasNext()) {
-                Integer hash = (Integer)var5.next();
+            while(iter.hasNext()) {
+                Integer hash = (Integer)iter.next();
                 if (hash < fileHash) {
                     smallerHashes.add(hash);
                 }
