@@ -19,7 +19,7 @@ public class Client implements Runnable {
         this.restTemplate = new RestTemplate();
         this.baseUrl = "http://172.28.0.2:8080/api/naming";
         System.out.println("<---> " + this.name + " Instantiated <--->");
-        addNode(this.name, this.IPAddress);
+        //addNode(this.name, this.IPAddress);
     }
 
     public void run() {
@@ -33,12 +33,14 @@ public class Client implements Runnable {
     }
 
     public void runSequence() {
+        addNode(this.name, this.IPAddress);
         findFile("file1.txt");
         sleep(500);
         findFile("file2.txt");
         sleep(500);
         findFile("file3.txt");
         sleep(5000);
+        deleteNode(this.name);
     }
 
     public void sleep(int time) {
