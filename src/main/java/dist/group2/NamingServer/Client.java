@@ -32,6 +32,7 @@ public class Client implements Runnable {
     }
 
     public void runSequence() {
+        addNode(this.name, this.IPAddress);
         findFile("file1.txt");
         sleep(500);
         findFile("file2.txt");

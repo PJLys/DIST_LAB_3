@@ -60,8 +60,11 @@ public class NamingService {
             }
 
             if (smallerHashes.isEmpty()) {
+                System.out.println("There are no nodes with a smaller hash than the hash of the file name");
+                System.out.println(fileName + " is stored at " + repository.get(Collections.max(hashes)));
                 return repository.get(Collections.max(hashes));
             } else {
+                System.out.println(fileName + " is stored at " + repository.get(Collections.max(smallerHashes)));
                 return repository.get(Collections.max(smallerHashes));
             }
         }
