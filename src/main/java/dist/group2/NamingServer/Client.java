@@ -19,7 +19,7 @@ public class Client implements Runnable {
         this.restTemplate = new RestTemplate();
         this.baseUrl = "http://172.28.0.2:8080/api/naming";
         System.out.println("<---> " + this.name + " Instantiated <--->");
-        //addNode(this.name, this.IPAddress);
+        addNode(this.name, this.IPAddress);
     }
 
     public void run() {
