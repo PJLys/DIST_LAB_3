@@ -13,7 +13,7 @@ import static dist.group2.NamingServer.NamingServer.JsonHelper.convertMapToJson;
 
 @Service
 public class NamingService {
-    private Map<Integer, String> repository;
+    private TreeMap<Integer, String> repository;
 
     @Autowired
     public NamingService() {
@@ -45,27 +45,19 @@ public class NamingService {
 
     @Transactional
     public synchronized String findFile(String fileName) {
-        int fileHash = this.hashValue(fileName);
-        Set<Integer> hashes = repository.keySet();
-
-        if (hashes.isEmpty()) {
+        if (repository.isEmpty()) {
             throw new IllegalStateException("There is no node in the database!");
-        } else {
-            List<Integer> smallerHashes = new ArrayList();
-            Iterator iter = hashes.iterator();
-
-            while(iter.hasNext()) {
-                Integer hash = (Integer)iter.next();
-                if (hash < fileHash) {
-                    smallerHashes.add(hash);
-                }
+        }
+        else {
+            int fileHash = this.hashValue(fileName);
+            Integer key;
+            try {
+                key = repository.headMap(fileHash).lastKey();
             }
-
-            if (smallerHashes.isEmpty()) {
-                return repository.get(Collections.max(hashes));
-            } else {
-                return repository.get(Collections.max(smallerHashes));
+            catch (NoSuchElementException e) {
+                key = repository.lastKey();
             }
+            return repository.get(key);
         }
     }
 }
