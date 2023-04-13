@@ -13,7 +13,7 @@ import static dist.group2.NamingServer.NamingServer.JsonHelper.convertMapToJson;
 
 @Service
 public class NamingService {
-    private Map<Integer, String> repository;
+    private TreeMap<Integer, String> repository;
 
     @Autowired
     public NamingService() {
@@ -29,6 +29,7 @@ public class NamingService {
         if (repository.containsKey(hashValue(node.get("nodeName")))) {
             throw new IllegalStateException("Hash of " + node.get("nodeName") + " is already being used");
         }
+        System.out.println("Succesfully added node with name " + node.get("nodeName") + " (hash=" + hashValue(node.get("nodeName")) + ") and IP address " + node.get("IPAddress"));
         repository.put(hashValue(node.get("nodeName")), node.get("IPAddress"));
         convertMapToJson(repository);
     }
@@ -38,32 +39,25 @@ public class NamingService {
             throw new IllegalStateException("There is no node with name" + nodeName);
         }
         repository.remove(hashValue(nodeName));
+        System.out.println("Succesfully removed node with name " + nodeName);
         convertMapToJson(repository);
     }
 
     @Transactional
     public synchronized String findFile(String fileName) {
-        int fileHash = this.hashValue(fileName);
-        Set<Integer> hashes = repository.keySet();
-
-        if (hashes.isEmpty()) {
+        if (repository.isEmpty()) {
             throw new IllegalStateException("There is no node in the database!");
-        } else {
-            List<Integer> smallerHashes = new ArrayList();
-            Iterator var5 = hashes.iterator();
-
-            while(var5.hasNext()) {
-                Integer hash = (Integer)var5.next();
-                if (hash < fileHash) {
-                    smallerHashes.add(hash);
-                }
+        }
+        else {
+            int fileHash = this.hashValue(fileName);
+            Integer key;
+            try {
+                key = repository.headMap(fileHash).lastKey();
             }
-
-            if (smallerHashes.isEmpty()) {
-                return repository.get(Collections.max(hashes));
-            } else {
-                return repository.get(Collections.max(smallerHashes));
+            catch (NoSuchElementException e) {
+                key = repository.lastKey();
             }
+            return repository.get(key);
         }
     }
 }
