@@ -1,5 +1,10 @@
 # DIST_LAB_3
-Making a naming service and deploying it on a node ring.
+Making a naming service and deploying it on nodes.
+
+## Branches
+- TestOnPC (previously ClientTest): To test the system locally
+- RemoteServer: The application to run on the server node
+- RemoteClient: The application to run on the client nodes
 
 ## Server
 ### Requisites
