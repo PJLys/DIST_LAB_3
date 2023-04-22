@@ -1,12 +1,8 @@
 package dist.group2.NamingServer.NamingServer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -21,16 +17,11 @@ public class JsonHelper {
         }
     }
 
-    public static Map<Integer, String> convertJsonToMap() {
+    public static TreeMap<Integer, String> convertJsonToMap() {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            Map<String, String> map = mapper.readValue(new File(path), Map.class);
-
-            Map<Integer, String> map2 = new TreeMap<>();
-            for (String key: map.keySet()) {
-                map2.put(Integer.parseInt(key), map.get(key));
-            }
-            return map2;
+            TreeMap<Integer, String> map = mapper.readValue(new File(path), TreeMap.class);
+            return map;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
